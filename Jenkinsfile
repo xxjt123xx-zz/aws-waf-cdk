@@ -7,8 +7,9 @@ pipeline {
   tools {nodejs "nodejs"}
 
   environment {
-    ACCOUNT = "358068194925"
-    REGION = "us-west-1"
+    ACCOUNT = '358068194925'
+    REGION = 'us-west-1'
+    APP_NAME = 'web-acl-test'
   }
 
   options {
@@ -22,8 +23,8 @@ pipeline {
 
     stage('Echo EnvVars') {
         steps {
-            echo "${env.ACCOUNT}"
-            echo "${env.REGION}"
+            echo '${env.ACCOUNT}'
+            echo '${env.REGION}'
         }
     }
 

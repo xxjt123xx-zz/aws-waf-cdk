@@ -1,3 +1,6 @@
+def awsCredentials = [[$class: 'AmazonWebServicesCredentialsBinding', credentialsId: 'jthornes']]
+
+
 pipeline {
   agent any
     
@@ -7,7 +10,14 @@ pipeline {
     ACCOUNT = "358068194925"
     REGION = "us-west-1"
   }
-    
+
+  options {
+    disableConcurrentBuilds()
+    parallelsAlwaysFailFast()
+    timestamps()
+    withCredentials(awsCredentials)
+  }
+
   stages {
 
     stage('Echo EnvVars') {

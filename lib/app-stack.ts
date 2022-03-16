@@ -17,60 +17,47 @@ export class AppStack extends Stack {
 
     this.appName = props?.appName || '';
 
-    // Setup WebACL
-    let assetName = `${this.appName}-webACL`;
-    const cfnWebACL = new wafv2.CfnWebACL(this, `${assetName}-fn`, {
-      name: this.appName,
-      scope: scp,
-      defaultAction: {
-        allow: {},
-      },
-      visibilityConfig: {
-        cloudWatchMetricsEnabled: false,
-        metricName: assetName,
-        sampledRequestsEnabled: false,
-      },
-    });
-
     // Setup IP Set
-    assetName = `${this.appName}-ip-set`;
-    const cfnIPSet = new wafv2.CfnIPSet(this, assetName, {
+    let assetName = `${this.appName}-ip-set`;
+    const ipSet = new wafv2.CfnIPSet(this, assetName, {
       name: this.appName,
       scope: scp,
       ipAddressVersion: ipver,
       addresses: ['192.0.2.44/32'],
     });
 
-    // Setup Rule Groups
-    assetName = `${this.appName}-rule-group`;
-    const cfnRuleGroup = new wafv2.CfnRuleGroup(this, assetName, {
+    // Setup WebACL
+    assetName = `${this.appName}-webACL`;
+    const webACL = new wafv2.CfnWebACL(this, `${assetName}-fn`, {
       name: this.appName,
       scope: scp,
-      capacity: 100,
+      defaultAction: {
+        allow: {},
+      },
+      rules: [
+        {
+          name: `${this.appName}-ip-filter`,
+          priority: 1,
+          statement: {
+            ipSetReferenceStatement: {
+              arn: ipSet.attrArn,
+            },
+          },
+          action: {
+            block: {},
+          },
+          visibilityConfig: {
+            cloudWatchMetricsEnabled: false,
+            metricName: assetName,
+            sampledRequestsEnabled: false,
+          },
+        },
+      ],
       visibilityConfig: {
         cloudWatchMetricsEnabled: false,
         metricName: assetName,
         sampledRequestsEnabled: false,
       },
-      rules: [
-        {
-          name: `${this.appName}-rule-1`, // TODO : Make dynamic
-          priority: 0,
-          visibilityConfig: {
-            cloudWatchMetricsEnabled: false,
-            metricName: 'metricName',
-            sampledRequestsEnabled: false,
-          },
-          action: {
-            block: {},
-          },
-          statement: {
-            ipSetReferenceStatement: {
-              arn: cfnIPSet.attrArn,
-            },
-          },
-        },
-      ],
     });
   }
   private appName: string;

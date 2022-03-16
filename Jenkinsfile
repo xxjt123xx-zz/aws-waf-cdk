@@ -9,6 +9,14 @@ pipeline {
   }
     
   stages {
+
+    stage('Echo EnvVars') {
+        steps {
+            echo "${env.ACCOUNT}"
+            echo "${env.REGION}"
+        }
+    }
+
      
     stage('NPM Install') {
       steps {

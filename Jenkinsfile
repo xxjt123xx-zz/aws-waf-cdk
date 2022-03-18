@@ -6,12 +6,6 @@ pipeline {
     
   tools {nodejs "nodejs"}
 
-  environment {
-    ACCOUNT = '358068194925'
-    REGION = 'us-west-1'
-    APP_NAME = 'web-acl-test'
-  }
-
   options {
     disableConcurrentBuilds()
     parallelsAlwaysFailFast()
@@ -20,14 +14,6 @@ pipeline {
   }
 
   stages {
-
-    stage('Echo EnvVars') {
-        steps {
-            echo '${env.ACCOUNT}'
-            echo '${env.REGION}'
-        }
-    }
-
      
     stage('NPM Install') {
       steps {
@@ -35,10 +21,30 @@ pipeline {
       }
     } 
      
-    stage('Deploy') {
+    stage('Deploy - us-west-1') {
+
+      environment {
+        ACCOUNT = '358068194925'
+        REGION = 'us-west-1'
+        APP_NAME = 'web-acl-test'
+      }
+
       steps {
         sh 'npm start'
       }
     }  
+     
+    stage('Deploy - us-east-1') {
+
+      environment {
+        ACCOUNT = '358068194925'
+        REGION = 'us-east-1'
+        APP_NAME = 'web-acl-test'
+      }
+      
+      steps {
+        sh 'npm start'
+      }
+    } 
   }
 }

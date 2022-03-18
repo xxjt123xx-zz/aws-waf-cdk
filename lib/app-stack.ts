@@ -75,9 +75,7 @@ export class AppStack extends Stack {
               arn: ruleGroup.attrArn,
             },
           },
-          action: {
-            block: {},
-          },
+          overrideAction: { none: {} },
           visibilityConfig: {
             cloudWatchMetricsEnabled: false,
             metricName: assetName,

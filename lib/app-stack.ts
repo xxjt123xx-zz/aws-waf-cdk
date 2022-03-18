@@ -26,6 +26,38 @@ export class AppStack extends Stack {
       addresses: ['192.0.2.44/32'],
     });
 
+    // Setup Rule Groups
+    assetName = `${this.appName}-rule-group`;
+    const ruleGroup = new wafv2.CfnRuleGroup(this, assetName, {
+      name: this.appName,
+      scope: scp,
+      capacity: 100,
+      visibilityConfig: {
+        cloudWatchMetricsEnabled: false,
+        metricName: assetName,
+        sampledRequestsEnabled: false,
+      },
+      rules: [
+        {
+          name: `${this.appName}-ip-filter`,
+          priority: 0,
+          visibilityConfig: {
+            cloudWatchMetricsEnabled: false,
+            metricName: 'metricName',
+            sampledRequestsEnabled: false,
+          },
+          action: {
+            block: {},
+          },
+          statement: {
+            ipSetReferenceStatement: {
+              arn: ipSet.attrArn,
+            },
+          },
+        },
+      ],
+    });
+
     // Setup WebACL
     assetName = `${this.appName}-webACL`;
     const webACL = new wafv2.CfnWebACL(this, `${assetName}-fn`, {
@@ -36,11 +68,11 @@ export class AppStack extends Stack {
       },
       rules: [
         {
-          name: `${this.appName}-ip-filter`,
+          name: this.appName,
           priority: 1,
           statement: {
-            ipSetReferenceStatement: {
-              arn: ipSet.attrArn,
+            ruleGroupReferenceStatement: {
+              arn: ruleGroup.attrArn,
             },
           },
           action: {

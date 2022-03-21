@@ -6,6 +6,7 @@ import * as wafv2 from 'aws-cdk-lib/aws-wafv2';
 export interface AppProps extends cdk.StackProps {
   readonly appName: string;
   readonly account: string;
+  readonly ipAdresses: string[];
 }
 
 export class AppStack extends Stack {
@@ -13,17 +14,20 @@ export class AppStack extends Stack {
     super(scope, id, props);
 
     const scp: string = 'REGIONAL';
-    const ipver: string = 'IPV4';
 
     this.appName = props?.appName || '';
+
+    const ipf: string[] = props?.ipAdresses || [''];
+
+    console.log('ipf:', ipf);
 
     // Setup IP Set
     let assetName = `${this.appName}-ip-set`;
     const ipSet = new wafv2.CfnIPSet(this, assetName, {
       name: this.appName,
       scope: scp,
-      ipAddressVersion: ipver,
-      addresses: ['192.0.2.44/32'],
+      ipAddressVersion: 'IPV4',
+      addresses: ipf,
     });
 
     // Setup Rule Groups

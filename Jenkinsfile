@@ -27,6 +27,7 @@ pipeline {
         ACCOUNT = '358068194925'
         REGION = 'us-west-1'
         APP_NAME = 'web-acl-test'
+        IPAddresses = '["192.0.2.42/32","192.0.2.44/32"]'
       }
 
       steps {
@@ -40,6 +41,7 @@ pipeline {
         ACCOUNT = '358068194925'
         REGION = 'us-east-1'
         APP_NAME = 'web-acl-test'
+        IPAddresses = '["192.0.2.42/32","192.0.2.44/32"]'
       }
       
       steps {

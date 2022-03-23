@@ -19,8 +19,6 @@ export class AppStack extends Stack {
 
     const ipf: string[] = props?.ipAdresses || [''];
 
-    console.log('ipf:', ipf);
-
     // Setup IP Set
     let assetName = `${this.appName}-ip-set`;
     const ipSet = new wafv2.CfnIPSet(this, assetName, {
